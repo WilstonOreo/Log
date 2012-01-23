@@ -181,7 +181,7 @@ class Log
 		time(&rawtime);
 		timeinfo = localtime(&rawtime);
 		strftime(timeBuffer,30,"%Y/%m/%d-%H:%M:%S",timeinfo); 
-		ss << colorStr(39,0,'|',timeBuffer);		
+		ss << colorStr(color,0,'|',timeBuffer);		
 #endif
 	
 #ifdef OUTPUT_MSG
