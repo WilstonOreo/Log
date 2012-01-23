@@ -1,0 +1,40 @@
+A simple class for Logging functionality
+----------------------------------------
+
+Logging is an important issue for debugging and monitoring.
+There are many C++ implementations for logging, such as boost:log but for simple logging and debugging purposes it they are often way too complex.
+What I wanted to have is a header only, minimalistic and easy-to-use Log class.
+Moreover, I wanted to study C++ features as templates, preprocessor hacks and operator functions as well as implementing singletons. Thus, I decided to write my own class ;)
+
+The header file "Log.hpp" contains several compiler switches to control which logging functionality are actually used.
+If you uncomment "LOGGING" there will no logging output at all.
+
+Usage examples
+--------------
+
+LOG_MSG_(2) << "Foo" << 1 << 2 << 3;
+LOG_WRN << "Bar";
+LOG_ERR << "Oops! An error";
+
+Formatting strings:
+
+int a = 1, b = 2, c = a + b;
+LOG_MSG << fmt("% + % = %") % a % b % c;
+
+int d = 1, e = 2, f = d + e;
+fmt F("% + % = %");
+LOG_MSG << F % a % b % c;
+LOG_MSG << F % d % e % f;
+
+See logtest.cpp for more examples.
+
+
+Using the Log class
+-------------------
+
+When you want to use the Logging functionalities, you will have to define LOG_INIT in the source file where your main method is located.
+Otherwise, you will get a linker error.
+
+
+
+
