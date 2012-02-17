@@ -353,9 +353,6 @@ public:
 
 #define LOG_(lvl,type) LOG->log(__FILE__,__FUNCTION__,__LINE__,(lvl),(type))
 
-#define LOG_THREAD_IN(threadId)  
-#define LOG_THREAD_OUT(threadId) 
-
 #define LOG_MSG LOG_(0,"MSG")
 #define LOG_MSG_(lvl) LOG_((lvl),"MSG")
 #define LOG_ERR LOG_(0,"ERR")
