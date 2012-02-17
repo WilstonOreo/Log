@@ -25,6 +25,8 @@
 #include <boost/thread.hpp>
 #include <boost/date_time.hpp>
 
+#include <time.h>
+
 #include <iostream>
 
 #include "log/Log.hpp"
@@ -35,17 +37,31 @@ LOG_INIT;
 
 void threadLog()
 {
-
-	boost::posix_time::seconds workTime(3);
+	boost::posix_time::seconds workTime(1);
 	boost::this_thread::sleep(workTime);
-	LOG_MSG << fmt("% %") % "Thread" % boost::this_thread::get_id();
-	LOG_MSG << "Hallo" << 1 << 2 << 3 << 4;
 
+	boost::thread::id tId = boost::this_thread::get_id();
+
+
+	LOG_MSG << fmt("% %") % "Thread" % tId;
+	LOG_MSG << "Hallo" << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8;
+	boost::this_thread::sleep(workTime);
+	LOG_MSG << fmt("% %") % "2 Thread" % tId;
+
+	boost::posix_time::milliseconds mTime(rand()*100000/RAND_MAX);
+
+	for (int i = 0; i < 100; i++)
+	{
+		LOG_MSG << fmt("%: % % %") % tId % i % (i*2) % (i*4);
+		boost::this_thread::sleep(mTime);
+	}
 }
 
 int main(int ac, char* av[])
 {
 	LOG_MSG << "LogTestApp. -- written by Wilston Oreo.";
+
+	srand ( time(NULL) );
 
 	LOG_MSG_(1) << "Startup";  
 	boost::thread thread1(threadLog);
@@ -64,13 +80,25 @@ int main(int ac, char* av[])
 	LOG->level(2);
 
 	LOG_MSG_(1) << fmt("Log level: %") % LOG->level();
-	LOG_WRN << "Warning";
+	LOG_WRN << fmt("Warning %") % 3;
 	LOG_MSG_(3);
 	LOG_MSG_(4);
 
-	LOG_ERR << "ERROR";
+//	map<boost::thread::id, string> threadBuffers;
+/*
+	if (!threadBuffers.count(boost::this_thread::get_id()))
+	{
+		stringstream ss;
+		boost::thread::id id = boost::this_thread::get_id();
+		threadBuffers.insert(pair<boost::thread::id,string>(id,ss.str()));
+	}*/
+ //	stringstream ss; ss << &threadBuffers[boost::this_thread::get_id()];
 
-	cout << endl;
+	//ss << "Test";
+
+//	cout << ss;
+
+//	LOG_ERR << "ERROR";
 	return 0;
 }
 
