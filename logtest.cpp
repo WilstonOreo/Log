@@ -22,7 +22,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ***********************************************************************/
 
-//#define TEST_THREADS
+//#define TEST_THREADS //uncommment to test with threads
 
 #include "log/Log.hpp" 
 
