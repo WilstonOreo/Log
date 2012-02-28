@@ -22,18 +22,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ***********************************************************************/
 
-#include <boost/thread.hpp>
-#include <boost/date_time.hpp>
+//#define TEST_THREADS
 
-#include <time.h>
+#include "log/Log.hpp" 
 
-#include <iostream>
-
-#include "log/Log.hpp"
-
-using namespace std;
+//should be unnecessary to include more than this...
 
 LOG_INIT;
+
+#ifdef TEST_THREADS
 
 void threadLog()
 {
@@ -57,9 +54,13 @@ void threadLog()
 	}
 }
 
+#endif
+
 int main(int ac, char* av[])
 {
 	LOG_MSG << "LogTestApp. -- written by Wilston Oreo.";
+
+#ifdef TEST_THREADS
 
 	srand ( time(NULL) );
 
@@ -74,6 +75,8 @@ int main(int ac, char* av[])
 	thread2.join();
 	thread3.join();
 	thread4.join();
+
+#endif
 
 	LOG_MSG_(1) << "Done";
 
@@ -99,6 +102,7 @@ int main(int ac, char* av[])
 //	cout << ss;
 
 //	LOG_ERR << "ERROR";
+
 	return 0;
 }
 
