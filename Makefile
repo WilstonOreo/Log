@@ -1,6 +1,6 @@
 CXX      = /usr/bin/g++
-CFLAGS  = -Os -Wall
-LDFLAGS = -lboost_thread 
+CFLAGS  = -Os -Wall 
+LDFLAGS = -lboost_thread -lrt
 
 PRG = logtest
 SRC = $(PRG).cpp

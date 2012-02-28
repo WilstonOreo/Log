@@ -26,13 +26,24 @@
 #pragma once 
 #define LOGGING
 
-//#define OUTPUT_TIME
+// general features switches
+
+#define OUTPUT_TIME
 #define OUTPUT_COUNTER
 #define OUTPUT_TIMER
-//#define OUTPUT_COLOR
+#define OUTPUT_COLOR
 #define OUTPUT_MSG
 #define OUTPUT_SRC
-#define THREAD_SAFE
+//#define THREAD_SAFE
+
+// in case you use OUTPUT_COLOR ...
+
+#define COLOR_ERR 31 //31
+#define COLOR_MSG 37 //37
+#define COLOR_WRN 33 //33
+#define COLOR_FILE 35 //35
+#define COLOR_LINE 32 //32
+#define COLOR_FUNC 36 //36
 
 #include <iostream>
 #include <sstream>
@@ -204,10 +215,10 @@ class Log
 #ifdef LOGGING
 		stringstream ss; 
 		int color = 39;
-#ifdef OUTPUT_COLOR
-		if (type=="ERR") color = 31; 
-		if (type=="MSG") color = 37; 
-		if (type=="WRN") color = 33;
+#ifdef OUTPUT_COLOR				    //former "default" values	
+		if (type=="ERR") color = COLOR_ERR; //31;  
+		if (type=="MSG") color = COLOR_MSG; //37; 
+		if (type=="WRN") color = COLOR_WRN; //33;
 #endif 
 
 #ifdef OUTPUT_COUNTER
@@ -248,9 +259,9 @@ class Log
 			if (file.substr(i,1)==string("/"))
 			{ pPos = i+1; break; }
 		file = file.substr(pPos,file.length()-pPos);
-		ss << colorStr(35,0,':',file);
-		ss << colorStr(32,1,':',linenumber);
-		ss << colorStr(36,0,'|',function);
+		ss << colorStr(COLOR_FILE,0,':',file); //35
+		ss << colorStr(COLOR_LINE,1,':',linenumber); //32
+		ss << colorStr(COLOR_FUNC,0,'|',function); //36
 #endif
 
 		return ss.str();
