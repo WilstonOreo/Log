@@ -38,18 +38,13 @@ Using the Log class
 Binary dependencies
 -------------------
 
-* To build an executable you need to link to rt library (time.h functions), 
-under Linux, at least. (Use -lrt option in gcc.)
-
-* When using the Makefile, this is already in the linker flags.
+* To build an executable and if you use the Timer functionality 
+  you need to link to rt library (time.h functions), 
+  under Linux, at least. (Use -lrt option in gcc.)
 
 * Depending on desired functionality you may have to link to Boost thread
 and date/time as these are not 100% header only.
 
-
-
- 
-
-
+* When using the Makefile, boost_thread and rt are are already in the linker flags.
 
 

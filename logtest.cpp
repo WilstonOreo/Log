@@ -86,22 +86,7 @@ int main(int ac, char* av[])
 	LOG_WRN << fmt("Warning %") % 3;
 	LOG_MSG_(3);
 	LOG_MSG_(4);
-
-//	map<boost::thread::id, string> threadBuffers;
-/*
-	if (!threadBuffers.count(boost::this_thread::get_id()))
-	{
-		stringstream ss;
-		boost::thread::id id = boost::this_thread::get_id();
-		threadBuffers.insert(pair<boost::thread::id,string>(id,ss.str()));
-	}*/
- //	stringstream ss; ss << &threadBuffers[boost::this_thread::get_id()];
-
-	//ss << "Test";
-
-//	cout << ss;
-
-//	LOG_ERR << "ERROR";
+	LOG_ERR << "ERROR";
 
 	return 0;
 }

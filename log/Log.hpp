@@ -30,7 +30,7 @@
 
 #define OUTPUT_TIME
 #define OUTPUT_COUNTER
-#define OUTPUT_TIMER
+//#define OUTPUT_TIMER
 #define OUTPUT_COLOR
 #define OUTPUT_MSG
 #define OUTPUT_SRC
@@ -44,6 +44,7 @@
 #define COLOR_FILE 35 //35
 #define COLOR_LINE 32 //32
 #define COLOR_FUNC 36 //36
+#define DELIMITER '|'
 
 #include <iostream>
 #include <sstream>
@@ -60,13 +61,14 @@ using namespace std;
 
 // From:
 // http://www2.hawaii.edu/~yucheng/projects/clocks/jade-netdelay/?file=jade-netdelay.c
+#ifdef OUTPUT_TIMER
 static void timespec_normalize(timespec * t) 
 { 	/* Eliminate overflows. */ 
 	while (t->tv_nsec > 1e9L) { t->tv_nsec -= 1e9L; t->tv_sec++; } 
 	/* Eliminate underflows. */ 
 	while (t->tv_nsec < 0L) { t->tv_nsec += 1e9L; t->tv_sec--; } 
 }
-
+#endif
 
 
 /// @brief: Simple struct for formatting strings with parameters
@@ -110,8 +112,7 @@ struct fmt
 		for (size_t i = 0; i < buf.length(); i++)
 		{
 			char c = buf[i];
-			switch (c)
-			{
+			switch (c)			{
 				case '%':
 					if (i > 0) 
 						if (buf[i-1] == '\\') continue;
@@ -187,7 +188,7 @@ class Log
 
 #ifdef THREAD_SAFE
 	boost::recursive_mutex lock;
-	#define LOCK boost::recursive_mutex::scoped_lock l(lock);
+#define LOCK boost::recursive_mutex::scoped_lock l(lock);
 #endif
 #ifndef THREAD_SAFE
 #define LOCK
@@ -222,7 +223,7 @@ class Log
 #endif 
 
 #ifdef OUTPUT_COUNTER
-		ss << colorStr(color,0,'|',counter);
+		ss << colorStr(color,0,DELIMITER,counter);
 		counter++;
 #endif 
 
@@ -233,24 +234,23 @@ class Log
 		time(&rawtime);
 		timeinfo = localtime(&rawtime);
 		strftime(timeBuffer,30,"%Y/%m/%d-%H:%M:%S",timeinfo); 
-		ss << colorStr(color,0,'|',timeBuffer);		
+		ss << colorStr(color,0,DELIMITER,timeBuffer);		
 #endif
 #ifdef OUTPUT_TIMER
-
 		timespec newTime;
 		clock_gettime(CLOCK_REALTIME,&newTime);
 		timespec difference;
-/* Add and two values. */ 
+		/* Add and two values. */ 
 		difference.tv_sec 	= newTime.tv_sec - ts.tv_sec; 
 		difference.tv_nsec 	= newTime.tv_nsec- ts.tv_nsec; /* Return the normalized difference. */ 
 		timespec_normalize(&difference);
 		double diff = difference.tv_sec + difference.tv_nsec/1000000000.0;
-		ss << colorStr(color,0,'|',diff);
+		ss << colorStr(color,0,DELIMITER,diff);
 #endif 
 
 #ifdef OUTPUT_MSG
 		stringstream st; st << type << _level;
-		ss << colorStr(color,1,'|',st.str());
+		ss << colorStr(color,1,DELIMITER,st.str());
 #endif
 
 #ifdef OUTPUT_SRC
@@ -261,7 +261,7 @@ class Log
 		file = file.substr(pPos,file.length()-pPos);
 		ss << colorStr(COLOR_FILE,0,':',file); //35
 		ss << colorStr(COLOR_LINE,1,':',linenumber); //32
-		ss << colorStr(COLOR_FUNC,0,'|',function); //36
+		ss << colorStr(COLOR_FUNC,0,DELIMITER,function); //36
 #endif
 
 		return ss.str();
@@ -282,17 +282,24 @@ class Log
 #endif
 	}
 
-public:
+	public:
 	void init()
 	{
 		counter = 0;
 		level(1); 
-		clock_gettime(CLOCK_REALTIME,&ts); 
+		resetTimer();
 		output(&cout);
 	}
 	ostream* output() const { return output_; }
-	
+
 	void output(ostream* _output) { output_ = _output; }
+
+	void resetTimer()
+	{
+#ifdef OUTPUT_TIMER
+		clock_gettime(CLOCK_REALTIME,&ts); 
+#endif		
+	}
 
 	int level() const { return level_; }
 	void level(int _level)
@@ -316,7 +323,7 @@ public:
 #endif
 		(*output_) << endl;
 		(*output_) << logHeader(file,function,linenumber,_level,type); 
-	
+
 #ifdef THREAD_SAFE
 		threadBuffers.erase(boost::this_thread::get_id());
 #endif
